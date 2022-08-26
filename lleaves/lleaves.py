@@ -53,9 +53,9 @@ class Model:
 
         self._pandas_categorical = extract_pandas_traintime_categories(model_file)
         num_attrs = extract_model_global_features(model_file)
-        self._n_feature = num_attrs["n_feature"]
-        self._n_classes = num_attrs["n_class"]
-        self._n_trees = num_attrs["n_trees"]
+        self._n_feature = 6
+        self._n_classes = 1
+        self._n_trees = 99
 
     def num_feature(self):
         """

@@ -5,122 +5,147 @@ It doesn't implement any transformations (expect for type casting).
 """
 
 
-def scan_model_file(file_path, general_info_only=False):
+
+def scan_model_file(file_path, features=None):
     res = {"trees": []}
-
-    def read_blocks(file_path):
-        with open(file_path, "r") as f:
-            while True:
-                lines = _get_next_block_of_lines(f)
-                if lines:
-                    yield lines
-                else:
-                    break
-
-    blocks = read_blocks(file_path)
-    # List of blocks we expect:
-    # 1* General Information
-    # N* Tree, one block for each tree
-    # 1* 'end of trees'
-    # followed by these ignored blocks:
-    # 1* Feature importances
-    # 1* Parameters
-    # 1* 'end of parameters'
-    # 1* 'pandas_categorical:XXXXX'
-
-    general_info_block = next(blocks)
-    assert general_info_block[0] == "tree" and general_info_block[1].startswith(
-        "version="
-    ), f"{file_path} is not a LightGBM model file"
-    res["general_info"] = _scan_block(general_info_block, INPUT_SCAN_KEYS)
-    if general_info_only:
-        return res
-
-    for block in blocks:
-        if block[0].startswith("Tree="):
-            res["trees"].append(_scan_tree(block))
-        else:
-            assert block[0] == "end of trees"
-            break
-    return res
+    features = ['Adj_Close', 'Close', 'High', 'Low', 'Open', 'Volume']
+    assert features!=None
+    num_features = len(features)
 
 
-def _scan_tree(lines):
-    struct = _scan_block(lines, TREE_SCAN_KEYS)
-    return struct
+    scanned_model_dict = {
+    'trees': [],
+    'general_info': {
+        'features': list,  
+        'num_class': int,
+        'feature_infos': ['[11.898214340209959:25.181070327758789]']*num_features,  # NEED TO CHANGE 
+        'num_tree_per_iteration': int,
+        'max_feature_idx': int,
+        'objective': ['regression'],
+    }}
+
+    model = readfile(file_path)
+    model_dict = extract(model)
+
+    # print(len(model_dict), model_dict[1][12])
+
+    scanned_model_dict['general_info']['features'] = features
+    scanned_model_dict['general_info']['max_feature_idx'] = len(features)-1
+    scanned_model_dict['general_info']['num_tree_per_iteration'] = 1
+    scanned_model_dict['general_info']['num_class'] = 1
 
 
-def _get_next_block_of_lines(file):
-    # the only function where the position inside the file is advanced
-    result = []
-    line = file.readline()
-    while line == "\n":
-        line = file.readline()
-    while line != "\n" and line != "":
-        result.append(line.strip())
-        line = file.readline()
-    return result
+    #######################################################################
+    for tri in range(len(model_dict)):
 
 
-class ScannedValue:
-    def __init__(self, type: type, is_list=False, null_ok=False):
-        self.type = type
-        self.is_list = is_list
-        self.null_ok = null_ok
+        tobj  = {
+                'Tree': int,
+                'num_leaves': int,
+                'split_feature': list,
+                'threshold': list,
+                'decision_type': list,
+                'left_child': list,
+                'right_child': list,
+                'leaf_value': list }
+    
+        threshold = []
+        l =[]
+        r =[]
+        split_feature = []
+        indices = []
 
-
-INPUT_SCAN_KEYS = {
-    "max_feature_idx": ScannedValue(int),
-    "num_class": ScannedValue(int),
-    "num_tree_per_iteration": ScannedValue(int),
-    "version": ScannedValue(str),
-    "feature_infos": ScannedValue(str, True),
-    "objective": ScannedValue(str, True),
-}
-TREE_SCAN_KEYS = {
-    "Tree": ScannedValue(int),
-    "num_leaves": ScannedValue(int),
-    "num_cat": ScannedValue(int),
-    "split_feature": ScannedValue(int, True),
-    "threshold": ScannedValue(float, True),
-    "decision_type": ScannedValue(int, True),
-    "left_child": ScannedValue(int, True),
-    "right_child": ScannedValue(int, True),
-    "leaf_value": ScannedValue(float, True),
-    "cat_threshold": ScannedValue(int, True, True),
-    "cat_boundaries": ScannedValue(int, True, True),
-}
-
-
-def _scan_block(lines: list, items_to_scan: dict):
-    """
-    Scans a block (= list of lines) into a key: value map.
-    :param lines: list of lines in the block
-    :param items_to_scan: dict with 'key': 'type of value' of keys to scan for
-    :return: dict with a key-value pair for each key in items_to_scan. Raises RuntimeError
-        if a non-nullable value from items_to_scan wasn't found in the block.
-    """
-    result_map = {}
-    for line in lines:
-        # initial line in file
-        if line == "tree":
-            continue
-
-        scanned_key, scanned_value = line.split("=")
-        target_type = items_to_scan.get(scanned_key)
-        if target_type is None:
-            continue
-        if target_type.is_list:
-            if scanned_value:
-                parsed_value = [target_type.type(x) for x in scanned_value.split(" ")]
+        for idx in model_dict[tri]:
+            if 'tresh' in model_dict[tri][idx].keys():
+                indices.append(idx)
+        
+        leaves = []
+        num_leaves = 0
+        tidx = []
+        lidx = []
+        
+        for idx in range(len(model_dict[tri])):
+            if 'tresh' in model_dict[tri][idx].keys():
+                tidx.append(idx)
             else:
-                parsed_value = []
-        else:
-            parsed_value = target_type.type(scanned_value)
-        result_map[scanned_key] = parsed_value
+                lidx.append(idx)
 
-    expected_keys = {k for k, v in items_to_scan.items() if not v.null_ok}
-    missing_keys = expected_keys - result_map.keys()
-    if missing_keys:
-        raise RuntimeError(f"Missing non-nullable keys {missing_keys}")
-    return result_map
+        for idx in range(len(model_dict[tri])):
+            # print(tri,idx)
+            if 'tresh' in model_dict[tri][idx].keys():
+                threshold.append(model_dict[tri][idx]['tresh'])
+                split_feature.append(model_dict[tri][idx]['index'])
+                
+                if 'leaf' in model_dict[tri][model_dict[tri][idx]['yes']]:
+                    l.append(-1*(lidx.index(model_dict[tri][idx]['yes'])+1))
+                else:
+                    l.append(tidx.index(model_dict[tri][idx]['yes']))
+                
+                if 'leaf' in model_dict[tri][model_dict[tri][idx]['no']]:
+                    r.append(-1*(lidx.index(model_dict[tri][idx]['no'])+1))
+                else:
+                    r.append(tidx.index(model_dict[tri][idx]['no']))
+            else:
+                leaves.append(model_dict[tri][idx]['leaf'])
+                num_leaves += 1
+
+        tobj['Tree'] = tri
+        tobj['split_feature'] = [features.index(x) for x in split_feature]
+        tobj['threshold'] = threshold
+        tobj['right_child'] = r
+        tobj['left_child'] = l
+        tobj['leaf_value'] = leaves
+        tobj['num_leaves'] = len(leaves)
+        tobj['decision_type'] = [2]*len(threshold)
+
+        scanned_model_dict['trees'].append(tobj)
+    ##########################################################################
+    return scanned_model_dict
+    
+
+
+def readfile(path):
+    file1 = open(path, 'r')
+    Lines = file1.readlines()
+    stripped_lines = []
+    for i in Lines:
+        stripped_lines.append(i.strip())
+    return stripped_lines
+
+def extract(model):
+    line = model
+    main_key = None
+    final = {}
+    num_leaves = []
+    for i in line:
+        key = i.split(":")[0].split("[")
+        value = i.split(":")[1:]
+        if key[0] == 'booster':
+            index = key[1].split("]")[0]
+            main_key = int(index)
+            final[main_key] = {}
+            num_leaves.append(0)
+        else:
+            numkey = int(key[0])
+            formatted_value = value[0].split(" ")
+            final[main_key][numkey] = {}
+            if formatted_value[0].split("=")[0] == "leaf":
+                x = float(formatted_value[0].split("=")[1])
+                final[main_key][numkey]["leaf"] = x
+                num_leaves[main_key] += 1
+            else :    
+                key2 = formatted_value[0]
+                val2 = formatted_value[1]
+                # print(key2[1:][:-1])
+                idx, tresh = key2[1:][:-1].split("<")
+                tresh = float(tresh)
+                yes, no, missing = val2.split(",")
+                yes = int(yes.split("=")[1])
+                no = int(no.split("=")[1])
+                missing = int(missing.split("=")[1])
+                
+                final[main_key][numkey]={"index":idx,"tresh":tresh,"yes":yes,"no":no,"missing":missing}
+
+
+    return final
+

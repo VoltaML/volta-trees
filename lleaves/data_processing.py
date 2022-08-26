@@ -31,11 +31,11 @@ def _dataframe_to_ndarray(data: pd_DataFrame, pd_traintime_categories: List[List
     :return: 2D np.ndarray, dtype float64 or float32
     """
     cat_cols = list(data.select_dtypes(include=["category"]).columns)
-    if len(cat_cols) != len(pd_traintime_categories):
-        raise ValueError(
-            "The categorical columns in the dataset don't match the categorical columns during training!"
-            f"Train had {len(pd_traintime_categories)} categorical columns, data has {len(cat_cols)}"
-        )
+    # if len(cat_cols) != len(pd_traintime_categories):
+    #     raise ValueError(
+    #         "The categorical columns in the dataset don't match the categorical columns during training!"
+    #         f"Train had {len(pd_traintime_categories)} categorical columns, data has {len(cat_cols)}"
+    #     )
     if len(cat_cols):
         data = data.copy()
         for col, category in zip(cat_cols, pd_traintime_categories):
@@ -149,7 +149,7 @@ def extract_pandas_traintime_categories(file_path):
             if pandas_categorical is None:
                 pandas_categorical = []
             return pandas_categorical
-    raise ValueError("Ill formatted model file!")
+    # raise ValueError("Ill formatted model file!")
 
 
 def extract_model_global_features(file_path):
@@ -176,5 +176,6 @@ def extract_model_global_features(file_path):
                 # `tree_sizes=123 123 123 123`
                 res["n_trees"] = len(line.split("=")[1].split(" "))
             else:
-                raise ValueError("Ill formatted model file!")
+                # raise ValueError("Ill formatted model file!")
+                pass
     return res
