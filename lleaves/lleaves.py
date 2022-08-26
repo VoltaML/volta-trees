@@ -42,7 +42,7 @@ class Model:
     # prediction function, drops GIL on entry
     _c_entry_func = None
 
-    def __init__(self, model_file):
+    def __init__(self, model_file, features):
         """
         Initialize the uncompiled model.
 
@@ -52,10 +52,11 @@ class Model:
         self.is_compiled = False
 
         self._pandas_categorical = extract_pandas_traintime_categories(model_file)
-        num_attrs = extract_model_global_features(model_file)
-        self._n_feature = 6
+        # num_attrs = extract_model_global_features(model_file)
+        self._n_feature = len(features)
         self._n_classes = 1
-        self._n_trees = 99
+        self._features = features
+        self._n_trees = len(compiler.ast.scanner.scan_model_file(model_file,features)['trees'])
 
     def num_feature(self):
         """
@@ -117,6 +118,7 @@ class Model:
         if cache is None or not Path(cache).exists():
             module = compiler.compile_to_module(
                 self.model_file,
+                features= self._features,
                 raw_score=raw_score,
                 fblocksize=fblocksize,
                 finline=finline,

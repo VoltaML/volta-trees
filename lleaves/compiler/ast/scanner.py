@@ -7,9 +7,8 @@ It doesn't implement any transformations (expect for type casting).
 
 
 def scan_model_file(file_path, features=None):
-    res = {"trees": []}
-    features = ['Adj_Close', 'Close', 'High', 'Low', 'Open', 'Volume']
-    assert features!=None
+    # print("Features : ", features)
+    # assert features!=None or len(features) > 0
     num_features = len(features)
 
 

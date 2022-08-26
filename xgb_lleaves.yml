@@ -125,6 +125,6 @@ dependencies:
   - zeromq=4.3.4=h2531618_0
   - zlib=1.2.12=h7f8727e_2
   - pip:
-    - lleaves==0.2.8.dev0+gfa16b65.d20220826
+    - lleaves==0.2.8.dev1+gbd300be.d20220826
     - llvmlite==0.39.0
 prefix: /home/aswin/anaconda3/envs/xg_lleaves

@@ -9,12 +9,13 @@ from lleaves.compiler.codegen import gen_forest
 
 def compile_to_module(
     file_path,
+    features,
     fblocksize=34,
     finline=True,
     raw_score=False,
     froot_func_name="forest_root",
 ):
-    forest = parse_to_ast(file_path)
+    forest = parse_to_ast(file_path, features)
     forest.raw_score = raw_score
 
     ir = llvmlite.ir.Module(name="forest")

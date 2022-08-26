@@ -152,6 +152,8 @@ def extract_pandas_traintime_categories(file_path):
     # raise ValueError("Ill formatted model file!")
 
 
+
+#############################################################################################################
 def extract_model_global_features(file_path):
     """
     Extract number of features, number of classes and number of trees of this model
