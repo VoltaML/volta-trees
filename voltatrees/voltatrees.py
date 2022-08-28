@@ -1,5 +1,5 @@
-import lleaves as XGBoostRegressor 
-import lleaves_xgb as LGBMRegressor
+import lleaves_xgb as XGBoostRegressor 
+import lleaves as LGBMRegressor
 
 #class XGBoostRegressor():
 #    def __init__(self):
