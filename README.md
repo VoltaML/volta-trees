@@ -2,7 +2,7 @@
 
 A LLVM-based compiler for LightGBM and XGBoost decision trees.
 
-`VolaTree` converts trained LightGBM and XGBoost models to optimized machine code, speeding-up prediction by ≥10x.
+`voltatrees` converts trained LightGBM and XGBoost models to optimized machine code, speeding-up prediction by ≥10x.
 
 ## Example
 
