@@ -7,7 +7,7 @@ with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
-    name="lleaves_xgb",
+    name="lleaves",
     use_scm_version=True,
     setup_requires=["setuptools_scm"],
     packages=find_packages(exclude=["benchmarks"]),

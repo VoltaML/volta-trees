@@ -1,0 +1,30 @@
+name: lleaves
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  # runtime deps
+  - python>=3.7
+  - llvmlite>=0.36
+  - numpy
+  # testing
+  - pytest
+  - hypothesis
+  - lightgbm
+  - pre-commit
+  - pyarrow
+  - pandas
+  # development
+  - sphinx
+  - sphinx_rtd_theme
+  - numpydoc
+  - sphinxcontrib-apidoc
+  - setuptools-scm
+  # benchmarks
+  - benchmark
+  - treelite
+  - compilers
+  - onnxruntime
+  - onnxmltools
+  - cmake
+  - libcnpy
