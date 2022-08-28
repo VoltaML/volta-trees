@@ -1,8 +1,8 @@
-# VoltaTrees 🍃
+# VoltaTrees 
 
-A LLVM-based compiler for LightGBM and XGBoost decision trees.
+A LLVM-based compiler for XGBoost and LightGBM decision trees.
 
-`voltatrees` converts trained LightGBM and XGBoost models to optimized machine code, speeding-up prediction by ≥10x.
+`voltatrees` converts trained XGBoost and LightGBM models to optimized machine code, speeding-up prediction by ≥10x.
 
 ## Example
 
