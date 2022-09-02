@@ -1,0 +1,2 @@
+llvmlite>=0.36
+numpy
