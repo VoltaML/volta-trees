@@ -152,7 +152,7 @@ class Model:
             )
 
         # convert all input types to numpy arrays
-        data = data_to_ndarray(data, [False,False])
+        data = data_to_ndarray(data,  self._pandas_categorical)
         n_predictions = data.shape[0]
         if len(data.shape) != 2 or data.shape[1] != self.num_feature():
             raise ValueError(

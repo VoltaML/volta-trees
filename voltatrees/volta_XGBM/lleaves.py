@@ -195,4 +195,4 @@ class Model:
                         ),
                         i,
                     )
-        return predictions
+        return predictions+0.5
