@@ -133,7 +133,7 @@ class Model:
 
         self.is_compiled = True
 
-    def predict(self, data, n_jobs=os.cpu_count()):
+    def predict(self, data, n_jobs=min(os.cpu_count()*data.shape[0]//100, os.cpu_count())):
         """
         Return predictions for the given data.
 
