@@ -1,4 +1,4 @@
-# VoltaTrees 
+# VoltaTrees 🌴🌴
 
 A LLVM-based compiler for XGBoost and LightGBM decision trees.
 
