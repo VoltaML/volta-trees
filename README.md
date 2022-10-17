@@ -1,4 +1,4 @@
-# VoltaTrees 🌴🌴
+# voltaTrees 🌴🌴
 
 A LLVM-based compiler for XGBoost and LightGBM decision trees.
 
@@ -16,18 +16,13 @@ model.predict(df)
 
 ## Installation
 
-(Need to add it to pip)
+```bash
+git clone git clone https://github.com/VoltaML/volta-trees.git
+cd volta-trees/
+pip install -e .
+```
 
 ## Benchmarks
 
 (TBD on bare-metal machine)
 
-## Development 
-
-```bash
-conda env create
-conda activate voltatrees
-git clone git clone https://github.com/VoltaML/volta-trees.git
-cd volta-trees/
-pip install -e .
-```
