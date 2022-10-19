@@ -24,5 +24,5 @@ pip install -e .
 
 ## Benchmarks
 
-(TBD on bare-metal machine)
+On smaller datasets, voltaTrees is 2-3X faster than Treelite by DMLC. Testing on large scale dataset is yet to be conducted.
 
