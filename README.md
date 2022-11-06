@@ -36,8 +36,6 @@ pip install -e .
 ## Development 
 
 ```bash
-conda env create
-conda activate voltatrees
 git clone git clone https://github.com/VoltaML/volta-trees.git
 cd volta-trees/
 pip install -e .
