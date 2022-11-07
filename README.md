@@ -25,6 +25,7 @@ model.predict(df)
 
 ## Installation
 ```bash
+git clone https://github.com/VoltaML/volta-trees.git
 cd volta-trees/
 pip install -e .
 ```
