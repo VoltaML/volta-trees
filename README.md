@@ -2,6 +2,8 @@
 
 A LLVM-based compiler for XGBoost and LightGBM decision trees.
 
+This work has been heavily inspired from [lleaves](https://github.com/siboehm/lleaves)
+
 `voltatrees` converts trained XGBoost and LightGBM models to optimized machine code, speeding-up prediction by ≥10x.
 
 ## Example
